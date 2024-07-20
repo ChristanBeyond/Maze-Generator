@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8987335787330068164}
   - component: {fileID: 5053829502585647721}
   m_Layer: 0
-  m_Name: MazeTile
+  m_Name: Maze Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 683802175401985137}
   - component: {fileID: 45206891861201378}
   m_Layer: 0
-  m_Name: WallPosX
+  m_Name: Wall Pos X
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 5213031363573586431}
   - component: {fileID: 1755957895829568345}
   m_Layer: 0
-  m_Name: WallPosY
+  m_Name: Wall Pos Y
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 6714099766947958351}
   - component: {fileID: 235347451257540219}
   m_Layer: 0
-  m_Name: WallNegX
+  m_Name: Wall Neg X
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -351,7 +351,7 @@ GameObject:
   - component: {fileID: 3480369299921227994}
   - component: {fileID: 4149635268928878479}
   m_Layer: 0
-  m_Name: WallNegY
+  m_Name: Wall Neg Y
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
