@@ -34,13 +34,10 @@ public class GridGenerator : MonoBehaviour
             for (int x = 0; x < widthSize; x++)
             {
                 Cell newCell = Instantiate(mazeCell, gameObject.transform);
-                newCell.cellPosition = new Vector3Int(x, y); //temporary check to see if grid generates correctly
                 newCell.transform.position = new(x, y);
                 _cells[x,y] = newCell;
-                print($"{x} & {y}");
-                print($"cellPosition {mazeCell.cellPosition}");
-                print($"Object position {mazeCell.transform.position}");
-                yield return new WaitForSeconds(0.1f);
+ 
+                yield return new WaitForSeconds(0.0001f);
             }
         }
         

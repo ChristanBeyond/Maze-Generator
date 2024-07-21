@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Algorithms;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-    //TODO: Reset the color here.
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private bool _visited;
+    [SerializeField] private GameObject wallLeft, wallRight, wallTop, wallBottom;
+    private bool _visited;
     public bool CellIsVisited
     {
         get => _visited;
@@ -16,5 +17,26 @@ public class Cell : MonoBehaviour
             _visited = value;
         }
     }
-    public Vector3Int cellPosition;
+
+    public void DisableWall(Direction wallToRemove)
+    {
+        switch (wallToRemove)
+        {
+            case Direction.Top:
+                wallTop.gameObject.SetActive(false);
+                break;
+            case Direction.Left:
+                wallLeft.gameObject.SetActive(false);
+                break;
+            case Direction.Bottom:
+                wallBottom.gameObject.SetActive(false);
+                break;
+            case Direction.Right:
+                wallRight.gameObject.SetActive(false);
+                break;
+            
+        }
+    }
+
+ 
 }
