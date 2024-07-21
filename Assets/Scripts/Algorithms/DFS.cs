@@ -67,10 +67,10 @@ namespace Algorithms
             var leftX = currentPos.x - 1;
             var rightX = currentPos.x + 1;
             
-            var topCell = currentPos.y + 1 < generator.heightSize  ? cellGrid[currentPos.x, topY] : null;
+            var topCell = currentPos.y + 1 < generator.HeightSize  ? cellGrid[currentPos.x, topY] : null;
             var bottomCell = currentPos.y -1 >= 0 ? cellGrid[currentPos.x, bottomY] : null;
             var leftCell = currentPos.x -1 >= 0 ? cellGrid[leftX, currentPos.y] : null;
-            var rightCell = currentPos.x + 1 < generator.widthSize ? cellGrid[rightX, currentPos.y] : null;
+            var rightCell = currentPos.x + 1 < generator.WidthSize ? cellGrid[rightX, currentPos.y] : null;
             
             List<Cell> unvisitedCells = new List<Cell>();
 
