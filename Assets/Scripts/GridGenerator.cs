@@ -8,49 +8,62 @@ using Random = UnityEngine.Random;
 
 public class GridGenerator : MonoBehaviour
 {
-    [SerializeField] private int widthSize, heightSize;
-    [SerializeField] private GameObject mazeCell;
-    private GameObject[,] _cells;
-    private GameObject _initialCell;
+    //TODO: Check if I can store the grid information in a scriptable object
+    
+    public int widthSize, heightSize;
+    [SerializeField] private Cell mazeCell;
+    public Cell[,] _cells;
+    public Cell _initialCell;
 
     public void Start()
     {
-        _cells = new GameObject[widthSize, heightSize];
+        _cells = new Cell[widthSize, heightSize];
+    }
+
+    public void OnGenerateGrid()
+    {
+        StartCoroutine(GenerateGrid());
     }
 
     //temporary solution
-    public void GenerateMaze()
+    private IEnumerator GenerateGrid()
     {
         ResetMaze();
-        Start();
-        for (int x = 0; x < widthSize; x++)
+        for (int y = 0; y < heightSize; y++)
         {
-            for (int y = 0; y < heightSize; y++)
+            for (int x = 0; x < widthSize; x++)
             {
-                _cells[x, y] = Instantiate(mazeCell, gameObject.transform);
-                mazeCell.transform.position = new(x, y);
+                Cell newCell = Instantiate(mazeCell, gameObject.transform);
+                newCell.cellPosition = new Vector3Int(x, y); //temporary check to see if grid generates correctly
+                newCell.transform.position = new(x, y);
+                _cells[x,y] = newCell;
+                print($"{x} & {y}");
+                print($"cellPosition {mazeCell.cellPosition}");
+                print($"Object position {mazeCell.transform.position}");
+                yield return new WaitForSeconds(0.1f);
             }
         }
-
+        
         var randomX = Random.Range(0, widthSize - 1);
         var randomY = Random.Range(0, heightSize - 1);
         _initialCell = _cells[randomX, randomY];
-        _initialCell.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        print(_initialCell.transform.position);
     }
 
+    //TODO: Write cheaper way to reset the grid
     private void ResetMaze()
     {
-        if (_cells != null)
+        if (_cells[0,0] != null)
         {
-            for (int x = 0; x < _cells.GetLength(0); x++)
+            for (int y = 0; y < _cells.GetLength(0); y++)
             {
-                for (int y = 0; y < _cells.GetLength(1); y++)
+                for (int x = 0; x < _cells.GetLength(1); x++)
                 {
-                    print(_cells[x, y]);
-                    Destroy(_cells[x, y]);
+                    Destroy(_cells[x, y].gameObject);
                 }
             }
-            Array.Clear(_cells, 0, _cells.Length);
+            //Clears the array completely
+            _cells = new Cell[widthSize, heightSize];
         }
     }
 }

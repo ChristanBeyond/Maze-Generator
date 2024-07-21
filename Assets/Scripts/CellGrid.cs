@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellGrid : MonoBehaviour
+[CreateAssetMenu(menuName = "GridGenerator/Cell Grid")]
+public class CellGrid : ScriptableObject
 {
+    [SerializeField] private int widthSize, heightSize;
+    [SerializeField] 
     // Start is called before the first frame update
     void Start()
     {
