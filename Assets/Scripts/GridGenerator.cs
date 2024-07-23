@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -9,10 +10,10 @@ public class GridGenerator : MonoBehaviour
 {
     //TODO: Check if I can store the grid information in a scriptable object
 
-    private int _widthSize; 
-    private int _heightSize;
+    
     [SerializeField] private Cell mazeCell;
     [SerializeField] private TMP_InputField widthInput, heightInput;
+    [SerializeField] private UnityEvent OnInvalidParameters;
     public Cell[,] _cells;
     public Cell _initialCell;
 
@@ -21,8 +22,10 @@ public class GridGenerator : MonoBehaviour
     
     private SpeedSettings _speedSetting;
     private float _generationSpeed;
+    private int _widthSize, _heightSize;
     public int HeightSize => _heightSize;
     public int WidthSize => _widthSize;
+    
 
     public void SetGenerationSpeed(int setting)
     {
@@ -87,6 +90,8 @@ public class GridGenerator : MonoBehaviour
             _cells = new Cell[_widthSize, _heightSize];
             return true;
         }
-        else return false;
+
+        OnInvalidParameters.Invoke();
+        return false;
     }
 }
