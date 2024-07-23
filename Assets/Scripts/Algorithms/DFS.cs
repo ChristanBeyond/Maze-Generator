@@ -56,7 +56,6 @@ namespace Algorithms
                 yield return new WaitForSeconds(0.001f);
             }
         }
-        //TODO: Include function that removes the walls
 
         private Cell CheckNeighbours(Cell cell)
         {

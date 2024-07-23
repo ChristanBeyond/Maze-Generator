@@ -9,7 +9,7 @@ public class ErrorMessage : MonoBehaviour
     public void SendErrorMessage()
     {
         errorText.alpha = 1;
-        errorText.text = "Invalid Parameters! Total cells must be more than 100(10x0) or less than 62500 (250x250)";
+        errorText.text = "Invalid Parameters! Width/Height must be a number between 10 and 250";
         StartCoroutine(FadeMessage());
     }
 

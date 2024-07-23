@@ -17,8 +17,8 @@ public class GridGenerator : MonoBehaviour
     public Cell[,] _cells;
     public Cell _initialCell;
 
-    private const int MaxCells = 62500;
-    private const int MinCells = 100;
+    private const int MaxCells = 250;
+    private const int MinCells = 10;
     
     private SpeedSettings _speedSetting;
     private float _generationSpeed;
@@ -83,8 +83,8 @@ public class GridGenerator : MonoBehaviour
 
         int.TryParse(widthInput.text, out _widthSize);
         int.TryParse(heightInput.text, out _heightSize);
-        //TODO: Make the error message visible in the UI
-        if (_widthSize * _heightSize <= MaxCells && _widthSize * _heightSize >= MinCells)
+        if (_widthSize >= MinCells && _widthSize <= MaxCells ||  
+            _heightSize >= MinCells && _heightSize <= MaxCells )
         {
             //Creates a new array with the new size;
             _cells = new Cell[_widthSize, _heightSize];
