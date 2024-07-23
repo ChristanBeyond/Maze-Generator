@@ -5,32 +5,29 @@ using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
-public enum SpeedSettings { Slow, Medium, Fast, Instant}
+public enum SpeedSettings { Slow, Medium, Fast, Instant }
 public class GridGenerator : MonoBehaviour
 {
     //TODO: Check if I can store the grid information in a scriptable object
 
-    
+
     [SerializeField] private Cell mazeCell;
     [SerializeField] private TMP_InputField widthInput, heightInput;
     [SerializeField] private UnityEvent OnInvalidParameters;
-    public Cell[,] _cells;
-    public Cell _initialCell;
+    [SerializeField] private UnityEvent OnGenerateWhileGenerating;
+
+    private Cell[,] _cells;
+    private Cell _initialCell;
+    private int _widthSize, _heightSize;
+    private bool _isGridGenerating;
 
     private const int MaxCells = 250;
     private const int MinCells = 10;
-    
-    private SpeedSettings _speedSetting;
-    private float _generationSpeed;
-    private int _widthSize, _heightSize;
     public int HeightSize => _heightSize;
     public int WidthSize => _widthSize;
-    
+    public Cell[,] Cells => _cells;
+    public Cell InitialCell => _initialCell;
 
-    public void SetGenerationSpeed(int setting)
-    {
-        _speedSetting = (SpeedSettings)setting;
-    }
 
     public void Start()
     {
@@ -39,55 +36,58 @@ public class GridGenerator : MonoBehaviour
         _cells = new Cell[_widthSize, _heightSize];
     }
 
-    public void OnGenerateGrid()
+    public void StartGeneratingGrid()
     {
+        if (_isGridGenerating)
+        {
+            OnGenerateWhileGenerating.Invoke();
+            return;
+        }
         StartCoroutine(GenerateGrid());
     }
 
-    //temporary solution
     private IEnumerator GenerateGrid()
     {
-        if(!ResetMaze()) yield break;
+        if (!IsGridCleared()) yield break;
+
+        _isGridGenerating = true;
+
         for (int x = 0; x < _widthSize; x++)
         {
             for (int y = 0; y < _heightSize; y++)
             {
                 Cell newCell = Instantiate(mazeCell, gameObject.transform);
-                var scale = gameObject.transform.localScale.x;
-                newCell.transform.position = new(x * scale, y * scale - _heightSize / 2f + 0.5f);
-                newCell.arrayPosition = new(x, y);
-                _cells[x, y] = newCell;
-
-                //yield return new WaitForSeconds(0.0001f);
+                newCell.transform.position = new(x, y - _heightSize / 2f + .5f);
+                newCell.ArrayPosition = new(x, y);
+                Cells[x, y] = newCell;
             }
         }
 
         var randomX = Random.Range(0, _widthSize - 1);
         var randomY = Random.Range(0, _heightSize - 1);
-        _initialCell = _cells[randomX, randomY];
+        _initialCell = Cells[randomX, randomY];
+        _isGridGenerating = false;
     }
 
-    //TODO: Write cheaper way to reset the grid
-    private bool ResetMaze()
+    private bool IsGridCleared()
     {
-        if (_cells[0, 0] != null)
+        if (Cells[0, 0] != null)
         {
-            for (int x = 0; x < _cells.GetLength(0); x++)
+            for (int x = 0; x < Cells.GetLength(0); x++)
             {
-                for (int y = 0; y < _cells.GetLength(1); y++)
+                for (int y = 0; y < Cells.GetLength(1); y++)
                 {
-                    Destroy(_cells[x, y].gameObject);
+                    Destroy(Cells[x, y].gameObject);
                 }
             }
-
         }
 
         int.TryParse(widthInput.text, out _widthSize);
         int.TryParse(heightInput.text, out _heightSize);
-        if (_widthSize >= MinCells && _widthSize <= MaxCells &&  
-            _heightSize >= MinCells && _heightSize <= MaxCells )
+
+        if (_widthSize >= MinCells && _widthSize <= MaxCells &&
+            _heightSize >= MinCells && _heightSize <= MaxCells)
         {
-            //Creates a new array with the new size;
             _cells = new Cell[_widthSize, _heightSize];
             return true;
         }

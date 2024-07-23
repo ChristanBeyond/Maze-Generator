@@ -6,10 +6,10 @@ using UnityEngine;
 public class ErrorMessage : MonoBehaviour
 {
     [SerializeField] private TMP_Text errorText;
-    public void SendErrorMessage()
+    public void SendErrorMessage(string message)
     {
         errorText.alpha = 1;
-        errorText.text = "Invalid Parameters! Width/Height must be a number between 10 and 250";
+        errorText.text = message;
         StartCoroutine(FadeMessage());
     }
 
@@ -19,10 +19,8 @@ public class ErrorMessage : MonoBehaviour
 
         while (errorText.alpha > 0f)
         {
-            print("Hello?");
             errorText.alpha -= (Time.deltaTime / 3f);
             yield return null;
         }
     }
-
 }

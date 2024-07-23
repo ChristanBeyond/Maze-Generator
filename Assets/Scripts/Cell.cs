@@ -7,8 +7,9 @@ public class Cell : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject wallLeft, wallRight, wallTop, wallBottom;
-    private bool _visited;
-    public Vector2Int arrayPosition;
+
+    private bool _visited, _rechecked;
+    private Vector2Int _arrayPosition;
     public bool CellIsVisited
     {
         get => _visited;
@@ -18,8 +19,19 @@ public class Cell : MonoBehaviour
             _visited = value;
         }
     }
+    public bool CellIsRechecked
+    {
+        get => _rechecked;
+        set
+        {
+            if (_rechecked != value) spriteRenderer.color = Color.green;
+            _rechecked = value;
+        }
+    }
 
-    public void DisableWall(Direction wallToRemove)
+    public Vector2Int ArrayPosition { get => _arrayPosition; set => _arrayPosition = value; }
+
+    public void RemoveWall(Direction wallToRemove)
     {
         switch (wallToRemove)
         {
@@ -35,9 +47,6 @@ public class Cell : MonoBehaviour
             case Direction.Right:
                 wallRight.gameObject.SetActive(false);
                 break;
-            
         }
     }
-
- 
 }

@@ -9,112 +9,124 @@ using Random = UnityEngine.Random;
 
 namespace Algorithms
 {
-    public enum Direction { Top, Bottom, Left, Right }
+    public enum Direction
+    {
+        Top,
+        Bottom,
+        Left,
+        Right
+    }
 
-    //TODO: Decouple GridGenerator from Algorith, maybe with help of a scriptable object
     public class DFS : MonoBehaviour
     {
-        
-        
-        [SerializeField] private Cell initialCell;
-        public GridGenerator generator;
+        [SerializeField] private GridGenerator generator;
+        [SerializeField] private UnityEvent OnGenerateWhileGenerating;
+
+        private Cell _initialCell, _currentCell;
         private readonly Stack<Cell> _checkedCellsStack = new();
         private Direction _direction;
-        public Cell[,] cellGrid;
-        private Cell _currentCell;
+        private Cell[,] _cellGrid;
+        private bool _isMazeGenerating;
 
-        public void OnGenerateMaze()
+
+        public void StartGeneratingMaze()
         {
+            if (_isMazeGenerating)
+            {
+                OnGenerateWhileGenerating.Invoke();
+                return;
+            }
             StartCoroutine(GenerateMaze());
         }
 
+        //Method that makes use of the Depth-First search algorithm to generate the maze
         private IEnumerator GenerateMaze()
         {
-            cellGrid = generator._cells;
-            //Get Initial Cell
-            initialCell = generator._initialCell;
+            _isMazeGenerating = true;
+
+            _cellGrid = generator.Cells;
+            _initialCell = generator.InitialCell;
+
             //Mark visited Cell as visited
-            initialCell.CellIsVisited = true;
-            _checkedCellsStack.Push(initialCell);
+            _initialCell.CellIsVisited = true;
+            _checkedCellsStack.Push(_initialCell);
 
             while (_checkedCellsStack.Count != 0)
             {
                 //Pop Current Cell
                 _currentCell = _checkedCellsStack.Pop();
-               
+
                 //Check and choose a random unvisited neighbour
-                var nextCell = CheckNeighbours(_currentCell);
-                _currentCell.GetComponent<SpriteRenderer>().color = Color.red;
-                if (nextCell != null) 
+                var nextCell = GetValidNeighbourCell(_currentCell);
+
+                if (nextCell != null)
                 {
                     _checkedCellsStack.Push(_currentCell);
-                    var cellPosition = nextCell.arrayPosition;
-                    cellGrid[cellPosition.x, cellPosition.y].CellIsVisited = true;
+                    var cellPosition = nextCell.ArrayPosition;
+                    _cellGrid[cellPosition.x, cellPosition.y].CellIsVisited = true;
+                    _direction = GetDirectionBetweenCells(_currentCell, nextCell);
                     RemoveWallBetweenCells(_direction, _currentCell, nextCell);
-                    //Call method to remove the walls by using the direction, get current cell and new cell
                     _checkedCellsStack.Push(nextCell);
                 }
+                //If a new cell hasn't been found, this means this cell has already been checked and will change color again
+                else _currentCell.CellIsRechecked = true;
+
                 yield return new WaitForFixedUpdate();
             }
+
+            _isMazeGenerating = false;
         }
 
-        private Cell CheckNeighbours(Cell cell)
+        //Method used to check neighbouring cells of the parameter cell
+        private Cell GetValidNeighbourCell(Cell cell)
         {
-            Vector2Int currentPos = cell.arrayPosition;
-            
-            var topCell = currentPos.y + 1 < generator.HeightSize  ? cellGrid[currentPos.x, currentPos.y + 1] : null;
-            var bottomCell = currentPos.y -1 >= 0 ? cellGrid[currentPos.x, currentPos.y - 1] : null;
-            var leftCell = currentPos.x -1 >= 0 ? cellGrid[currentPos.x - 1, currentPos.y] : null;
-            var rightCell = currentPos.x + 1 < generator.WidthSize ? cellGrid[currentPos.x + 1, currentPos.y] : null;
-            
+            Vector2Int currentPos = cell.ArrayPosition;
+
+            var topCell = currentPos.y + 1 < generator.HeightSize ? _cellGrid[currentPos.x, currentPos.y + 1] : null;
+            var bottomCell = currentPos.y - 1 >= 0 ? _cellGrid[currentPos.x, currentPos.y - 1] : null;
+            var leftCell = currentPos.x - 1 >= 0 ? _cellGrid[currentPos.x - 1, currentPos.y] : null;
+            var rightCell = currentPos.x + 1 < generator.WidthSize ? _cellGrid[currentPos.x + 1, currentPos.y] : null;
+
             List<Cell> unvisitedCells = new List<Cell>();
 
-            if(topCell != null && !topCell.CellIsVisited) unvisitedCells.Add(topCell);
-            if(bottomCell != null && !bottomCell.CellIsVisited) unvisitedCells.Add(bottomCell);
-            if(leftCell != null && !leftCell.CellIsVisited) unvisitedCells.Add(leftCell);
-            if(rightCell != null && !rightCell.CellIsVisited) unvisitedCells.Add(rightCell);
-            
-            print(Random.Range(0, unvisitedCells.Count));
+            if (topCell != null && !topCell.CellIsVisited) unvisitedCells.Add(topCell);
+            if (bottomCell != null && !bottomCell.CellIsVisited) unvisitedCells.Add(bottomCell);
+            if (leftCell != null && !leftCell.CellIsVisited) unvisitedCells.Add(leftCell);
+            if (rightCell != null && !rightCell.CellIsVisited) unvisitedCells.Add(rightCell);
+
             var newCell = unvisitedCells.Count > 0 ? unvisitedCells[Random.Range(0, unvisitedCells.Count)] : null;
 
-            if (newCell != null)
-            {
-                if (newCell.arrayPosition.y > currentPos.y)
-                {
-                    _direction = Direction.Top;
-                } else if (newCell.arrayPosition.y < currentPos.y)
-                {
-                    _direction = Direction.Bottom;
-                } else if (newCell.arrayPosition.x < currentPos.x)
-                {
-                    _direction = Direction.Left;
-                }
-                else _direction = Direction.Right;
-            }
             unvisitedCells.Clear();
             return newCell;
         }
-        
-        private void RemoveWallBetweenCells(Direction dir, Cell currentCell, Cell newCell){
-            
-            //based on direction, remove walls.
+
+        private Direction GetDirectionBetweenCells(Cell currentCell, Cell newCell)
+        {
+            if (newCell.ArrayPosition.y > currentCell.ArrayPosition.y) return Direction.Top;
+            else if (newCell.ArrayPosition.y < currentCell.ArrayPosition.y) return Direction.Bottom;
+            else if (newCell.ArrayPosition.x < currentCell.ArrayPosition.x) return Direction.Left;
+            else return Direction.Right;
+        }
+
+        private void RemoveWallBetweenCells(Direction dir, Cell currentCell, Cell newCell)
+        {
             switch (dir)
             {
                 case Direction.Top:
-                    currentCell.DisableWall(Direction.Top);
-                    newCell.DisableWall(Direction.Bottom);
+                    currentCell.RemoveWall(Direction.Top);
+                    newCell.RemoveWall(Direction.Bottom);
                     break;
                 case Direction.Bottom:
-                    currentCell.DisableWall(Direction.Bottom);
-                    newCell.DisableWall(Direction.Top);
+                    currentCell.RemoveWall(Direction.Bottom);
+                    newCell.RemoveWall(Direction.Top);
                     break;
                 case Direction.Left:
-                    currentCell.DisableWall(Direction.Left);
-                    newCell.DisableWall(Direction.Right);
+                    currentCell.RemoveWall(Direction.Left);
+                    newCell.RemoveWall(Direction.Right);
                     break;
                 case Direction.Right:
-                    currentCell.DisableWall(Direction.Right);
-                    newCell.DisableWall(Direction.Left);
+                    currentCell.RemoveWall(Direction.Right);
+                    newCell.RemoveWall(Direction.Left);
                     break;
             }
         }
