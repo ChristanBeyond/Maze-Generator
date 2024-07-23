@@ -63,7 +63,6 @@ public class GridGenerator : MonoBehaviour
         var randomX = Random.Range(0, _widthSize - 1);
         var randomY = Random.Range(0, _heightSize - 1);
         _initialCell = _cells[randomX, randomY];
-        print(_initialCell.transform.position);
     }
 
     //TODO: Write cheaper way to reset the grid
