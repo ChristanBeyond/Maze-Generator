@@ -96,7 +96,6 @@ namespace Algorithms
 
             var newCell = unvisitedCells.Count > 0 ? unvisitedCells[Random.Range(0, unvisitedCells.Count)] : null;
 
-            unvisitedCells.Clear();
             return newCell;
         }
 
