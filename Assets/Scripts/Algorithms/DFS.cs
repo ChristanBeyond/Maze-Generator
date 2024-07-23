@@ -27,6 +27,7 @@ namespace Algorithms
         {
             StartCoroutine(GenerateMaze());
         }
+
         private IEnumerator GenerateMaze()
         {
             cellGrid = generator._cells;
@@ -47,29 +48,24 @@ namespace Algorithms
                 if (nextCell != null) 
                 {
                     _checkedCellsStack.Push(_currentCell);
-                    var cellPosition = Vector3Int.FloorToInt(nextCell.transform.position);
+                    var cellPosition = nextCell.arrayPosition;
                     cellGrid[cellPosition.x, cellPosition.y].CellIsVisited = true;
                     RemoveWallBetweenCells(_direction, _currentCell, nextCell);
                     //Call method to remove the walls by using the direction, get current cell and new cell
                     _checkedCellsStack.Push(nextCell);
                 }
-                yield return new WaitForSeconds(0.001f);
+                yield return new WaitForFixedUpdate();
             }
         }
 
         private Cell CheckNeighbours(Cell cell)
         {
-            Vector3Int currentPos = Vector3Int.FloorToInt(cell.transform.position);
+            Vector2Int currentPos = cell.arrayPosition;
             
-            var topY = currentPos.y + 1;
-            var bottomY = currentPos.y - 1;
-            var leftX = currentPos.x - 1;
-            var rightX = currentPos.x + 1;
-            
-            var topCell = currentPos.y + 1 < generator.HeightSize  ? cellGrid[currentPos.x, topY] : null;
-            var bottomCell = currentPos.y -1 >= 0 ? cellGrid[currentPos.x, bottomY] : null;
-            var leftCell = currentPos.x -1 >= 0 ? cellGrid[leftX, currentPos.y] : null;
-            var rightCell = currentPos.x + 1 < generator.WidthSize ? cellGrid[rightX, currentPos.y] : null;
+            var topCell = currentPos.y + 1 < generator.HeightSize  ? cellGrid[currentPos.x, currentPos.y + 1] : null;
+            var bottomCell = currentPos.y -1 >= 0 ? cellGrid[currentPos.x, currentPos.y - 1] : null;
+            var leftCell = currentPos.x -1 >= 0 ? cellGrid[currentPos.x - 1, currentPos.y] : null;
+            var rightCell = currentPos.x + 1 < generator.WidthSize ? cellGrid[currentPos.x + 1, currentPos.y] : null;
             
             List<Cell> unvisitedCells = new List<Cell>();
 
@@ -78,19 +74,18 @@ namespace Algorithms
             if(leftCell != null && !leftCell.CellIsVisited) unvisitedCells.Add(leftCell);
             if(rightCell != null && !rightCell.CellIsVisited) unvisitedCells.Add(rightCell);
             
-            print($"Cell Count {unvisitedCells.Count}");
             print(Random.Range(0, unvisitedCells.Count));
             var newCell = unvisitedCells.Count > 0 ? unvisitedCells[Random.Range(0, unvisitedCells.Count)] : null;
 
             if (newCell != null)
             {
-                if (newCell.transform.position.y > currentPos.y)
+                if (newCell.arrayPosition.y > currentPos.y)
                 {
                     _direction = Direction.Top;
-                } else if (newCell.transform.position.y < currentPos.y)
+                } else if (newCell.arrayPosition.y < currentPos.y)
                 {
                     _direction = Direction.Bottom;
-                } else if (newCell.transform.position.x < currentPos.x)
+                } else if (newCell.arrayPosition.x < currentPos.x)
                 {
                     _direction = Direction.Left;
                 }

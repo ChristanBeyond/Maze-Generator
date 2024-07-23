@@ -8,6 +8,7 @@ public class Cell : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject wallLeft, wallRight, wallTop, wallBottom;
     private bool _visited;
+    public Vector2Int arrayPosition;
     public bool CellIsVisited
     {
         get => _visited;

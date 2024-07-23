@@ -53,10 +53,12 @@ public class GridGenerator : MonoBehaviour
             for (int y = 0; y < _heightSize; y++)
             {
                 Cell newCell = Instantiate(mazeCell, gameObject.transform);
-                newCell.transform.position = new(x, y);
+                var scale = gameObject.transform.localScale.x;
+                newCell.transform.position = new(x * scale, y * scale - _heightSize / 2f + 0.5f);
+                newCell.arrayPosition = new(x, y);
                 _cells[x, y] = newCell;
 
-                yield return new WaitForSeconds(0.0001f);
+                //yield return new WaitForSeconds(0.0001f);
             }
         }
 
@@ -82,7 +84,7 @@ public class GridGenerator : MonoBehaviour
 
         int.TryParse(widthInput.text, out _widthSize);
         int.TryParse(heightInput.text, out _heightSize);
-        if (_widthSize >= MinCells && _widthSize <= MaxCells ||  
+        if (_widthSize >= MinCells && _widthSize <= MaxCells &&  
             _heightSize >= MinCells && _heightSize <= MaxCells )
         {
             //Creates a new array with the new size;
