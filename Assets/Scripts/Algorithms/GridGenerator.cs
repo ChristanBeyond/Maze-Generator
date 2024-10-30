@@ -31,9 +31,12 @@ public class GridGenerator : MonoBehaviour
 
     public void Start()
     {
-        int.TryParse(widthInput.text, out _widthSize);
-        int.TryParse(heightInput.text, out _heightSize);
-        _cells = new Cell[_widthSize, _heightSize];
+        // This is a poor way of validating input text. If you expect numbers within a field - you should only allow numbers:
+        // https://discussions.unity.com/t/allow-only-numbers-to-a-textfield-and-make-it-an-int/126733
+        // Which TMP convienently does offer that, right under the actual text in the inspector, Input Field Settings > Content Type > Integer Number
+        //int.TryParse(widthInput.text, out _widthSize);
+        //int.TryParse(heightInput.text, out _heightSize);
+        _cells = new Cell[_widthSize = int.Parse(widthInput.text), _heightSize = int.Parse(heightInput.text)];
     }
 
     public void StartGeneratingGrid()
