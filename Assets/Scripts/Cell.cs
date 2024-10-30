@@ -34,9 +34,11 @@ public class Cell : MonoBehaviour
 #else 
     // Only thing that's different about this, is the use of structs to still label the directions inside the inspector, instead of getting Element 0, Element 1, etc.
     // Which yes, this could theoretically be improved by using Editor Extensions - but I do not know how to use them, that's a whole different ball game, but could be interesting to look into.
-    // Notably, the setup for this would be *much* easier, if you were to make the Directions enum and the hierarchy of the Maze Tile Prefab match.
+    // Notably, the setup for this would be *much* easier, if you were to make the Direction enum and the hierarchy of the Maze Tile Prefab match.
     // Matching objects in hierarchies make them easily indexable, you could automate the entire process if you do that.
     // By that I mean not even needing to have SerializeFields. Right now not going to make a rewrite of it, but if you're interested I'll give it a shot.
+    // I lied, I reordered your Direction enum, it was breaking itself due to not being coherent indexing (which makes sense, I just didn't notice till now, oops).
+    // I did not change the hierarchy of the Maze Tile Prefab itself.
     [System.Serializable]
     private struct Wall
     {

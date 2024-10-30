@@ -11,10 +11,10 @@ namespace Algorithms
 {
     public enum Direction
     {
-        Top,
-        Bottom,
         Left,
-        Right
+        Right,
+        Top,
+        Bottom
     }
 
     public class DFS : MonoBehaviour
