@@ -35,17 +35,23 @@ public class Cell : MonoBehaviour
     {
         switch (wallToRemove)
         {
+            // Indirection calls, your IDE should log that too. Keep an eye on the Messages tab of the Error List. (Assuming VS, with Rider I've no idea).
+            // https://github.com/microsoft/Microsoft.Unity.Analyzers/blob/main/doc/UNT0019.md
             case Direction.Top:
-                wallTop.gameObject.SetActive(false);
+                //wallTop.gameObject.SetActive(false);
+                wallTop.SetActive(false);
                 break;
             case Direction.Left:
-                wallLeft.gameObject.SetActive(false);
+                //wallLeft.gameObject.SetActive(false);
+                wallLeft.SetActive(false);
                 break;
             case Direction.Bottom:
-                wallBottom.gameObject.SetActive(false);
+                //wallBottom.gameObject.SetActive(false);
+                wallBottom.SetActive(false);
                 break;
             case Direction.Right:
-                wallRight.gameObject.SetActive(false);
+                //wallRight.gameObject.SetActive(false);
+                wallRight.SetActive(false);
                 break;
         }
     }
